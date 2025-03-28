@@ -24,7 +24,7 @@ public class BuildingSearchBuilder {//hàm mẹ
      private BuildingSearchBuilder(Builder builder) {
          this.name = builder.name;
          this.street = builder.street;
-         this.districtId = builder.districtCode;
+         this.districtId = builder.districtId;
          this.ward = builder.ward;
          this.numberOfBasement = builder.numberOfBasement;
          this.managerName = builder.managerName;

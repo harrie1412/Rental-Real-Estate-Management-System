@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.springframework.context.annotation.PropertySource;
+
 public class connectionJDBCUtil {
 	static final String DB_URL = "jdbc:mysql://localhost:3306/exercise2f";
 	static final String USER = "root";
