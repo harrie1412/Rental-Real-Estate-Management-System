@@ -7,7 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +34,7 @@ import CustomException.FieldRequiredException;
 import java.sql.Statement;
 //@Controller
 @RestController
+@PropertySource("classpath:application.properties")
 public class BuildingAPI {
 	//Param : dùng tìm kiếm
 	//Body: thêm, sửa, xóa
@@ -212,11 +218,12 @@ public class BuildingAPI {
 //		return result;// trả dữ liệu
 //	}
 	
-	
-	
 	//Video 12
 		@Autowired // giúp hiểu được interface khai báo ở dòng 185
 		private BuildingService buildingService;
+		
+		@Value("${dev.nguyen}")
+		private String dt;
 		
 		@GetMapping(value="/api/building/")//xoá tòa nhà
 		public List<BuildingDTO> getBuildings(@RequestParam Map<String,Object> params,
@@ -224,8 +231,10 @@ public class BuildingAPI {
 			List<BuildingDTO> result = buildingService.findAll(params,typeCode);		
 			return result;// trả dữ liệu
 		}
-	
-	
-	
+//		@DeleteMapping(value="/api/building/{id}")
+//		public void deleteBuilding(@PathVariable Integer id) {
+//			System.out.println(dt);//in gia tri
+//		}
+//		
+		
 }
-

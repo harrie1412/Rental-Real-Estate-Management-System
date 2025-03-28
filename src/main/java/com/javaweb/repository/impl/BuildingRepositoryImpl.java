@@ -2,6 +2,7 @@ package com.javaweb.repository.impl;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearchBuilder;
@@ -18,10 +21,18 @@ import com.javaweb.utils.NumberUtil;
 import com.javaweb.utils.StringUtil;
 import com.javaweb.utils.connectionJDBCUtil;
 
-
+@PropertySource("classpath:application.properties")
 @Repository//dùng để nhận biết đây là data access
 public class BuildingRepositoryImpl implements BuildingRepository
 {
+	@Value("${spring.datasource.url}")
+	private String DB_URL;
+	
+	@Value("${spring.datasource.username}")
+	private String USER;
+	
+	@Value("${spring.datasource.password}")
+	private String PASS;
 	
 //	private BuildingRepository buildingRepository;
 	
@@ -147,7 +158,7 @@ public class BuildingRepositoryImpl implements BuildingRepository
 		sql.append(where);
 		
 		List<BuildingEntity> result = new ArrayList<>();
-		try(Connection conn = connectionJDBCUtil.getConnection();
+		try(Connection conn  = DriverManager.getConnection(DB_URL, USER, PASS);
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql.toString());){//lấy dữ liệu
 			
