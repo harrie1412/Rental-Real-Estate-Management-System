@@ -1,4 +1,4 @@
-package com.javaweb.repository.impl;
+package com.javaweb.repository.custom.impl;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -10,12 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearchBuilder;
 import com.javaweb.repository.BuildingRepository;
+import com.javaweb.repository.custom.BuildingRepositoryCustom;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.utils.NumberUtil;
 import com.javaweb.utils.StringUtil;
@@ -23,16 +29,20 @@ import com.javaweb.utils.connectionJDBCUtil;
 
 @PropertySource("classpath:application.properties")
 @Repository//dùng để nhận biết đây là data access
-public class BuildingRepositoryImpl implements BuildingRepository
+@Primary
+public class BuildingRepositoryImpl implements BuildingRepositoryCustom
 {
-	@Value("${spring.datasource.url}")
-	private String DB_URL;
+//	@Value("${spring.datasource.url}")
+//	private String DB_URL;
+//	
+//	@Value("${spring.datasource.username}")
+//	private String USER;
+//	
+//	@Value("${spring.datasource.password}")
+//	private String PASS;
 	
-	@Value("${spring.datasource.username}")
-	private String USER;
-	
-	@Value("${spring.datasource.password}")
-	private String PASS;
+	@PersistenceContext
+	private EntityManager entityManager;//kiểu query để
 	
 //	private BuildingRepository buildingRepository;
 	
@@ -146,7 +156,7 @@ public class BuildingRepositoryImpl implements BuildingRepository
 		}
 }
 	
-	@Override
+//	@Override
 	public List<BuildingEntity> findAll(BuildingSearchBuilder buildingSearchBuilder) {
 		StringBuilder sql = new StringBuilder( "SELECT b.id, b.name, b.street, b.ward, b.districtid, b.numberofbasement, b.floorarea, b.rentprice, b.managername, b.managerphone, b.servicefee, b.brokeragefee FROM building b ");//tạo String lệnh để lấy data từ BE
 		
@@ -158,33 +168,37 @@ public class BuildingRepositoryImpl implements BuildingRepository
 		sql.append(where);
 		
 		List<BuildingEntity> result = new ArrayList<>();
-		try(Connection conn  = DriverManager.getConnection(DB_URL, USER, PASS);
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql.toString());){//lấy dữ liệu
-			
-			while(rs.next()) {
-				BuildingEntity building = new BuildingEntity();
-				building.setId(rs.getLong("b.id"));
-				building.setName(rs.getString("b.name"));
-				building.setWard(rs.getString("b.ward"));
-				building.setDistrictid(rs.getLong("b.districtid"));
-				building.setStreet(rs.getString("b.street"));
-				building.setFloorArea(rs.getLong("b.floorarea"));
-				building.setRentPrice(rs.getLong("b.rentprice"));
-				building.setServiceFee(rs.getString("b.servicefee"));
-				building.setBrokerageFee(rs.getLong("b.brokeragefee"));
-				building.setManagerName(rs.getString("b.managername"));
-				building.setManagerPhoneNumber(rs.getString("b.managerphone"));
-				result.add(building);
-
-			}
-				
-			
-		}catch(SQLException e) {
-			e.printStackTrace();
-//			System.out.println("Connected database failed...");
-		}
-		return result;
+		Query query = entityManager.createNativeQuery(sql.toString(),BuildingEntity.class);//mở lệnh sql, trả về buildingEntity
+		return query.getResultList();//trả về list
+		
+		
+//		try(Connection conn  = DriverManager.getConnection(DB_URL, USER, PASS);
+//				Statement stmt = conn.createStatement();
+//				ResultSet rs = stmt.executeQuery(sql.toString());){//lấy dữ liệu
+//			
+//			while(rs.next()) {
+//				BuildingEntity building = new BuildingEntity();
+//				building.setId(rs.getLong("b.id"));
+//				building.setName(rs.getString("b.name"));
+//				building.setWard(rs.getString("b.ward"));
+////				building.setDistrictId(rs.getLong("b.districtid"));
+//				building.setStreet(rs.getString("b.street"));
+//				building.setFloorArea(rs.getLong("b.floorarea"));
+//				building.setRentPrice(rs.getLong("b.rentprice"));
+//				building.setServiceFee(rs.getString("b.servicefee"));
+//				building.setBrokerageFee(rs.getLong("b.brokeragefee"));
+//				building.setManagerName(rs.getString("b.managername"));
+//				building.setManagerPhoneNumber(rs.getString("b.managerphone"));
+//				result.add(building);
+//
+//			}
+//				
+//			
+//		}catch(SQLException e) {
+//			e.printStackTrace();
+////			System.out.println("Connected database failed...");
+//		}
+//		return result;
 	}
 
 	

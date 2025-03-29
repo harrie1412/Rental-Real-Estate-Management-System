@@ -23,10 +23,9 @@ import com.javaweb.service.BuildingService;
 
 @Service
 public class BuildingServiceImpl implements BuildingService {
-	//buildingDTO có thể hiểu là lấy các yêu cầu cần thiết cần hiển thị
-	//buildingEntity có thể hiểu là lấy tổng các dữ liệu liên quan mà DTO cần
 	@Autowired
 	private BuildingRepository buildingRepository;
+	
 	
 	@Autowired
 	private BuildingDTOConverter buildingDTOConverter;
@@ -37,9 +36,8 @@ public class BuildingServiceImpl implements BuildingService {
 	@Override
 	public List<BuildingDTO> findAll(Map<String,Object> params,List<String> typeCode) {
 		// TODO Auto-generated method stub
-		//bắt đầu filter, chắt lọc dữ liệu client
 		BuildingSearchBuilder buildingSearchBuilder = buildingSearchBuilderConverter.toBuildingSearchBuilder(params, typeCode);
-		List<BuildingEntity> buildingEntities= buildingRepository.findAll(buildingSearchBuilder);// lấy tổng dữ liệu
+		List<BuildingEntity> buildingEntities= buildingRepository.findAll();// lấy tổng dữ liệu
 		List<BuildingDTO> result = new ArrayList<BuildingDTO>();
 		for(BuildingEntity item : buildingEntities) {//chắt lọc dữ liệu
 			BuildingDTO building = buildingDTOConverter.toBuildingDTO(item);//set các dữ liệu tự động

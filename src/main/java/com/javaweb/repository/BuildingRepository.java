@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.javaweb.builder.BuildingSearchBuilder;
+import com.javaweb.repository.custom.BuildingRepositoryCustom;
 import com.javaweb.repository.entity.BuildingEntity;
 
-public interface BuildingRepository {//chứa abstract method
-	List<BuildingEntity> findAll(BuildingSearchBuilder buildingSearchBuilder);
-//	void DeleteById(long id);
+public interface BuildingRepository extends JpaRepository<BuildingEntity, Long >, BuildingRepositoryCustom{//chứa abstract method
+//	List<BuildingEntity> findAll(BuildingSearchBuilder buildingSearchBuilder);
+	void DeleteByIdIn(Long[] ids);
+	List<BuildingEntity> findByNameContaining(String s);
+	List<BuildingEntity> findByNameContainingAndStreet(String name, String street);
+	
 
 }
